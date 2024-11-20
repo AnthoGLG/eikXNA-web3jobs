@@ -1,0 +1,51 @@
+
+ import "./company.zmodel"  
+  import "./application.zmodel"
+  import "./document.zmodel"
+
+enum SalaryType {
+    MONTHLY
+    ONE_OFF
+    PER_HOUR
+    PER_DAY
+    PER_WEEK
+    PER_YEAR
+}
+
+enum JobStatus {
+    APPROVED
+    ARCHIVED
+}
+model JobOffer {
+
+    id                           String         @id @default(uuid())
+    title                        String
+    description                  String
+    location                     String?
+
+    tags                         String?
+
+    applicationDocumentsRequired DocumentType[]
+
+    companyId                    String
+
+    salary                       Float?
+    salaryType                   SalaryType?
+    salaryCurrency               String?
+
+    status                       JobStatus      @default(APPROVED)
+
+    company                      Company?       @relation(fields: [companyId], references: [id], name: "company")
+    applications                 Application[]  @relation("jobOffer")
+    attachments                  Document[]     @relation("jobOfferAttachments")
+    dateCreated                  DateTime       @default(now())
+    dateUpdated                  DateTime       @updatedAt @default(now())
+
+    @@allow("create, read", true)
+    @@allow("update, delete", auth().companyId == companyId)
+    @@allow("all", auth().role == "ADMIN")
+}
+
+
+
+

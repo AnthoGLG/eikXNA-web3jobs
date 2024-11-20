@@ -1,0 +1,22 @@
+
+ import "./jobOffer.zmodel"  
+ import "./user.zmodel"
+ import "./document.zmodel"
+
+model Application {
+
+    id          String     @id @default(uuid())
+    documents   Document[]
+
+    jobOfferId  String
+    jobOffer    JobOffer?  @relation(fields: [jobOfferId], references: [id], name: "jobOffer")
+    userId      String
+    user        User?      @relation(fields: [userId], references: [id], name: "user")
+    dateCreated DateTime   @default(now())
+    dateUpdated DateTime   @updatedAt @default(now())
+
+    @@allow("create, read", true)
+    @@allow("update, delete", auth().id == userId)
+    @@allow("all", auth().role == "ADMIN")
+}
+

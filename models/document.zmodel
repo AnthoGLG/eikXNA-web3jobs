@@ -1,0 +1,28 @@
+import './application.zmodel'
+import './jobOffer.zmodel'
+
+enum DocumentType {
+  RESUME
+  COVER_LETTER
+  PORTFOLIO
+  OTHER
+}
+
+
+
+model Document {
+  id            String       @id @default(uuid())
+  url           String
+  name          String?
+  type          DocumentType @default(OTHER)
+
+  applicationId String?
+  application   Application? @relation(fields: [applicationId], references: [id])
+
+  jobOfferId    String?
+  jobOffer      JobOffer?    @relation("jobOfferAttachments", fields: [jobOfferId], references: [id])
+
+  @@allow("all", true)
+}
+
+

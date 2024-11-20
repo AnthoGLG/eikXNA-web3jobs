@@ -1,0 +1,22 @@
+
+ import "./user.zmodel"  
+ import "./jobOffer.zmodel"
+
+model Company {
+
+    id          String     @id @default(uuid())
+    name        String
+    address     String?
+    website     String?
+    logo        String?
+
+
+    users       User[]     @relation("company")
+    jobOffers   JobOffer[] @relation("company")
+    dateCreated DateTime   @default(now())
+    dateUpdated DateTime   @updatedAt @default(now())
+
+    @@allow("create, read", true)
+    @@allow("update, delete", auth().companyId == id)
+    @@allow("all", auth().role == "ADMIN")
+}
